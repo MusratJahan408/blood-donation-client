@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* raleway google fonts  */
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+
+
+body {
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
