@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 import { Link, useLocation, useNavigate } from "react-router";
 import axios from "axios";
@@ -15,10 +15,11 @@ const Register = () => {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
+    control
+    ,
   } = useForm();
 
-  const password = watch("password");
+  const password = useWatch({control, name:"password"});
 
   const { registerUser, updateUserProfile } = useAuth();
   const location = useLocation();
