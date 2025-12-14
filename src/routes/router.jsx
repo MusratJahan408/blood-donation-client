@@ -5,13 +5,14 @@ import Login from "../Pages/Auth/Login";
 import Register from "../Pages/Auth/Register";
 import ErrorPage from "../Components/ErrorPage";
 import Search from "../Components/Search";
-import DashboardLayout from "../Pages/Dashboard/DashboardLayout";
 import DashboardHome from "../Pages/Dashboard/DashboardHome";
 import Profile from "../Pages/Dashboard/Profile";
 import CreateDonationRequest from "../Pages/Dashboard/CreateDonationRequest";
 import MyDonationRequests from "../Pages/Dashboard/MyDonationRequests";
 import EditDonationRequest from "../Pages/Dashboard/EditDonationRequest";
 import DonationRequestDetails from "../Pages/Dashboard/DonationRequestDetails";
+import DashboardLayout from "../Layout/DashboardLayout";
+import PrivateRoute from "./PrivateRoute";
 
 
 export const router = createBrowserRouter([
@@ -36,9 +37,12 @@ export const router = createBrowserRouter([
         path:'/search-donors',
         element:<Search></Search>
       },
-      {
+    ],
+    
+  },
+   {
         path: "/dashboard",
-        element: <DashboardLayout></DashboardLayout>,
+        element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
         children: [
           {
              index: true,
@@ -65,8 +69,5 @@ export const router = createBrowserRouter([
             element: <DonationRequestDetails></DonationRequestDetails> }, 
         ],
       }
-
-    ]
-  },
 ]);
 

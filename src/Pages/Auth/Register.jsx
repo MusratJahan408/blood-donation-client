@@ -6,121 +6,107 @@ import axios from "axios";
 import useLocationData from "../../hooks/useLocationData";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-
 const Register = () => {
   const { district, upazila } = useLocationData();
-    const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false);
+
+  const { registerUser, updateUserProfile } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    control
-    ,
+    control,
   } = useForm();
 
-  const password = useWatch({control, name:"password"});
+  const password = useWatch({ control, name: "password" });
 
-  const { registerUser, updateUserProfile } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
+ 
+  const handleRegistration = async (data) => {
+    try {
 
-  const handleRegistration = (data) => {
-    const profileImg = data.photo[0];
+      const result = await registerUser(data.email, data.password);
+      const loggedUser = result.user;
 
-    // 1. Firebase auth create
-    registerUser(data.email, data.password)
-      .then((result) => {
-        // 2. Upload image to imgbb
-        const formData = new FormData();
-        formData.append("image", profileImg);
+  
+      const formData = new FormData();
+      formData.append("image", data.photo[0]);
 
-        const imageUrl = `https://api.imgbb.com/1/upload?key=${
-          import.meta.env.VITE_image_host
-        }`;
+      const imgRes = await axios.post(
+        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`,
+        formData
+      );
 
-        axios.post(imageUrl, formData).then((res) => {
-          const imgLink = res.data.data.url;
+      const avatar = imgRes.data.data.url;
 
-          // 3. Update Firebase Profile
-          updateUserProfile({
-            displayName: data.name,
-            photoURL: imgLink,
-          }).then(() => {
-            // 4. Full user object for Database
-            const newUser = {
-              email: data.email,
-              name: data.name,
-              avatar: imgLink,
-              bloodGroup: data.blood,
-              district: data.district,
-              upazila: data.upazila,
-              role: "donor",
-              status: "active",
-            };
 
-            // 5. Save user in backend
-            axios
-              .post("http://localhost:5000/users", newUser)
-              .then(() => {
-                navigate(location.state || "/");
-              })
-              .catch((err) => console.log(err));
-          });
-        });
-      })
-      .catch((err) => console.log(err));
+      await updateUserProfile({
+        displayName: data.name,
+        photoURL: avatar,
+      });
+
+
+      const newUser = {
+        name: data.name,
+        email: loggedUser.email, 
+        avatar: avatar,
+        bloodGroup: data.blood,
+        district: data.district,
+        upazila: data.upazila,
+        role: "donor", 
+        status: "active", 
+      };
+
+      await axios.post("http://localhost:3000/users", newUser);
+
+
+      navigate(location.state || "/");
+    } catch (error) {
+      console.error("Registration error:", error);
+    }
   };
 
   return (
-    <div className="bg-[#fff9f9] py-10 md:py-0 min-h-screen flex justify-center items-center">
+    <div className="bg-[#fff9f9] min-h-screen flex justify-center items-center">
       <div>
-        <h1 className="text-3xl md:text-5xl font-bold mb-10">Register Your Account</h1>
-        <div className="card bg-base-100 w-full max-w-7xl shadow-2xl">
+        <h1 className="text-3xl md:text-5xl font-bold mb-8">
+          Register Your Account
+        </h1>
+
+        <div className="card bg-base-100 w-full max-w-3xl shadow-2xl">
           <div className="card-body">
             <form onSubmit={handleSubmit(handleRegistration)}>
-              <fieldset className="fieldset">
-
+              <fieldset className="fieldset space-y-2">
                 {/* Name */}
-                <label className="label">Name</label>
                 <input
-                  type="text"
                   {...register("name", { required: true })}
-                  className="input w-full border-[#b71b1c] "
-                  placeholder="Your name"
+                  placeholder="Name"
+                  className="input input-bordered border-[#b71b1c] w-full"
                 />
-                {errors.name && (
-                  <p className="text-red-500">Name is required</p>
-                )}
+                {errors.name && <p className="text-red-500">Name required</p>}
 
                 {/* Photo */}
-                <label className="label">Photo</label>
                 <input
                   type="file"
                   {...register("photo", { required: true })}
-                  className="file-input w-full border-[#b71b1c] "
+                  className="file-input file-input-bordered border-[#b71b1c] w-full"
                 />
-                {errors.photo && (
-                  <p className="text-red-500">Photo is required</p>
-                )}
+                {errors.photo && <p className="text-red-500">Photo required</p>}
 
                 {/* Email */}
-                <label className="label">Email</label>
                 <input
                   type="email"
                   {...register("email", { required: true })}
-                  className="input w-full border-[#b71b1c] "
                   placeholder="Email"
+                  className="input input-bordered border-[#b71b1c] w-full"
                 />
-                {errors.email && (
-                  <p className="text-red-500">Email is required</p>
-                )}
 
-                {/* Blood group */}
-                <label className="label">Blood Group</label>
+                {/* Blood Group */}
                 <select
-                  className="select select-bordered w-full border-[#b71b1c] "
                   {...register("blood", { required: true })}
+                  className="select select-bordered border-[#b71b1c] w-full"
                 >
                   <option value="">Select blood group</option>
                   <option>A+</option>
@@ -132,15 +118,11 @@ const Register = () => {
                   <option>O+</option>
                   <option>O-</option>
                 </select>
-                {errors.blood && (
-                  <p className="text-red-500">Blood group is required</p>
-                )}
 
                 {/* District */}
-                <label className="label">District</label>
                 <select
-                  className="select select-bordered w-full border-[#b71b1c] "
                   {...register("district", { required: true })}
+                  className="select select-bordered border-[#b71b1c] w-full"
                 >
                   <option value="">Select district</option>
                   {district.map((d) => (
@@ -149,15 +131,11 @@ const Register = () => {
                     </option>
                   ))}
                 </select>
-                {errors.district && (
-                  <p className="text-red-500">District is required</p>
-                )}
 
                 {/* Upazila */}
-                <label className="label">Upazila</label>
                 <select
-                  className="select select-bordered w-full border-[#b71b1c] "
                   {...register("upazila", { required: true })}
+                  className="select select-bordered border-[#b71b1c] w-full"
                 >
                   <option value="">Select upazila</option>
                   {upazila.map((u) => (
@@ -166,83 +144,61 @@ const Register = () => {
                     </option>
                   ))}
                 </select>
-                {errors.upazila && (
-                  <p className="text-red-500">Upazila is required</p>
-                )}
 
                 {/* Password */}
-               <div className="relative mt-4">
-                 <label className="label">Password</label>
-                <input
-                 type={show ? "text" : "password"}
-                  {...register("password", {
-                    required: true,
-                    minLength: 6,
-                    pattern:
-                      /^[A-Za-z0-9!@#$%^&*()_+\-={}[\]|:;"'<>,.?/\\]+$/,
-                  })}
-                  className="input w-full border-[#b71b1c] "
-                  placeholder="Password"
-                />
-                 <p onClick={() => setShow(!show)}className="absolute top-8 left-68 md:left-[430px] cursor-pointer">
+                <div className="relative">
+                  <input
+                    type={show ? "text" : "password"}
+                    {...register("password", {
+                      required: true,
+                      minLength: 6,
+                      pattern:
+                        /^[A-Za-z0-9!@#$%^&*()_+\-={}[\]|:;"'<>,.?/\\]+$/,
+                    })}
+                    placeholder="Password"
+                    className="input input-bordered border-[#b71b1c] w-full"
+                  />
+                  <span
+                    onClick={() => setShow(!show)}
+                    className="absolute right-4 top-3 cursor-pointer"
+                  >
                     {show ? <FaEye /> : <FaEyeSlash />}
-                  </p>
-               </div>
-                
-                {errors.password?.type === "required" && (
-                  <p className="text-red-500">Password is required</p>
-                )}
-                {errors.password?.type === "minLength" && (
-                  <p className="text-red-500">
-                    Password must be 6 character or longer
-                  </p>
-                )}
-                {errors.password?.type === "pattern" && (
-                  <p className="text-red-500">
-                    Password can contain letters, numbers and special characters.
-                  </p>
-                )}
+                  </span>
+                </div>
 
                 {/* Confirm Password */}
-                <div className="relative mt-4">
-                  <label className="label">Confirm Password</label>
-                <input
-                 type={show ? "text" : "password"}
-                  {...register("confirm_password", {
-                    required: true,
-                    validate: (value) =>
-                      value === password || "Password did not match",
-                  })}
-                  className="input w-full border-[#b71b1c] "
-                  placeholder="Confirm password"
-                />
-                <p onClick={() => setShow(!show)}className="absolute top-8 left-68 md:left-[430px] cursor-pointer">
+                <div className="relative">
+                  <input
+                    type={show ? "text" : "password"}
+                    {...register("confirm_password", {
+                      required: true,
+                      validate: (v) => v === password || "Password mismatch",
+                    })}
+                    placeholder="Confirm Password"
+                    className="input input-bordered w-full border-[#b71b1c]"
+                  />
+                  <span
+                    onClick={() => setShow(!show)}
+                    className="absolute right-4 top-3 cursor-pointer"
+                  >
                     {show ? <FaEye /> : <FaEyeSlash />}
-                  </p>
+                  </span>
                 </div>
-                {errors.confirm_password && (
-                  <p className="text-red-500">
-                    {errors.confirm_password.message}
-                  </p>
-                )}
 
-                <button className="btn bg-[#b71b1c] text-white mt-5">Register</button>
+                <button className="btn bg-[#b71b1c] text-white w-full mt-3">
+                  Register
+                </button>
               </fieldset>
             </form>
 
-            <p className="mt-2 text-center">
+            <p className="text-center mt-3">
               Already have an account?
-              <Link
-                className="text-[#b71b1c] underline font-bold ml-1"
-                to="/login"
-              >
+              <Link to="/login" className="text-[#b71b1c] ml-1 font-bold">
                 Login
               </Link>
             </p>
-
           </div>
         </div>
-
       </div>
     </div>
   );
