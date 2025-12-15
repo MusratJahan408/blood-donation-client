@@ -108,7 +108,7 @@ const DashboardHome = () => {
                     </Link>
 
                     {/* DELETE */}
-                    <button className="btn btn-xs btn-error">Delete</button>
+                    <button className="btn btn-xs bg-[#b71b1c] text-white ">Delete</button>
 
                     {req.status === "inprogress" && (
                       <>
