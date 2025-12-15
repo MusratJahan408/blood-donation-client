@@ -14,60 +14,62 @@ import DonationRequestDetails from "../Pages/Dashboard/DonationRequestDetails";
 import DashboardLayout from "../Layout/DashboardLayout";
 import PrivateRoute from "./PrivateRoute";
 
-
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout></MainLayout>,
-    errorElement:<ErrorPage></ErrorPage>,
-    children:[
+    errorElement: <ErrorPage></ErrorPage>,
+    children: [
       {
-        index:true,
-        element:<Home></Home>
+        index: true,
+        element: <Home></Home>,
       },
       {
-        path:'/login',
-        element:<Login></Login>
+        path: "/login",
+        element: <Login></Login>,
       },
       {
-        path:'/register',
-        element:<Register></Register>
+        path: "/register",
+        element: <Register></Register>,
       },
       {
-        path:'/search-donors',
-        element:<Search></Search>
+        path: "/search-donors",
+        element: <Search></Search>,
       },
     ],
-    
   },
-   {
-        path: "/dashboard",
-        element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
-        children: [
-          {
-             index: true,
-             element: <DashboardHome></DashboardHome> 
-          }, 
-          {
-             path: "profile",
-             element: <Profile></Profile>
-          },
-          {
-             path: "create-donation-request",
-             element: <CreateDonationRequest></CreateDonationRequest>
-          },
-          { 
-            path: "my-donation-requests",
-            element: <MyDonationRequests></MyDonationRequests>
-          },
-          {
-           path: "edit-donation-request/:id",
-           element: <EditDonationRequest></EditDonationRequest>
-          }, 
-          { 
-            path: "donation-request/:id", 
-            element: <DonationRequestDetails></DonationRequestDetails> }, 
-        ],
-      }
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout></DashboardLayout>
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <DashboardHome></DashboardHome>,
+      },
+      {
+        path: "profile",
+        element: <Profile></Profile>,
+      },
+      {
+        path: "create-donation-request",
+        element: <CreateDonationRequest></CreateDonationRequest>,
+      },
+      {
+        path: "my-donation-requests",
+        element: <MyDonationRequests></MyDonationRequests>,
+      },
+      {
+        path: "edit-donation-request/:id",
+        element: <EditDonationRequest></EditDonationRequest>,
+      },
+      {
+        path: "donation-requests/:id",
+        element: <DonationRequestDetails />,
+      },
+    ],
+  },
 ]);
-

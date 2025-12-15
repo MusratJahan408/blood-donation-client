@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 
 const MyDonationRequests = () => {
   const { user, loading } = useAuth();
-  const [requests, setRequests] = useState([]); // array হবে
+  const [requests, setRequests] = useState([]);
   const [filter, setFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
@@ -27,7 +27,6 @@ const MyDonationRequests = () => {
 
       const res = await axios.get(url);
 
-      // এখানে শুধু array নিলাম
       setRequests(res.data.requests || []); 
     } catch (err) {
       console.error("Failed to fetch requests:", err);
@@ -52,7 +51,7 @@ const MyDonationRequests = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto mt-10 p-4 bg-white shadow rounded">
+    <div className="max-w-6xl mx-auto mt-10 p-4 bg-[#fff9f9] shadow rounded">
       <h2 className="text-2xl font-bold mb-4">My Donation Requests</h2>
 
       {/* Filter */}
@@ -61,7 +60,7 @@ const MyDonationRequests = () => {
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="select select-bordered w-48"
+          className="select  border-[#b71b1c] w-48"
         >
           <option value="all">All</option>
           <option value="pending">Pending</option>
@@ -108,7 +107,7 @@ const MyDonationRequests = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="text-center">
+                <td colSpan="8" className="text-center text-red-700 font-bold">
                   No donation requests found.
                 </td>
               </tr>

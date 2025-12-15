@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router";
-import useAuth from '../../hooks/useAuth';
-import Loading from '../../Components/Loading';
+import useAuth from "../../hooks/useAuth";
+import Loading from "../../Components/Loading";
 
 const DashboardHome = () => {
   const { user, loading } = useAuth();
@@ -25,8 +25,7 @@ const DashboardHome = () => {
     }
   }, [loading, user?.email]);
 
-
-   const updateStatus = (id, status) => {
+  const updateStatus = (id, status) => {
     axios
       .patch(`http://localhost:3000/donation-requests/${id}`, { status })
       .then(() => {
@@ -37,10 +36,8 @@ const DashboardHome = () => {
   };
 
   if (loading) {
-    return <Loading></Loading>
+    return <Loading></Loading>;
   }
-
-   
 
   return (
     <div className="p-6">
@@ -54,7 +51,7 @@ const DashboardHome = () => {
       )}
       {requests.length > 0 && (
         <>
-         <table className="table w-full border border-[#b71b1c]">
+          <table className="table w-full border border-[#b71b1c]">
             <thead>
               <tr>
                 <th>Recipient</th>
@@ -94,26 +91,24 @@ const DashboardHome = () => {
 
                   {/* Actions */}
                   <td className="space-x-1">
+                    {/* VIEW */}
                     <Link
-                      to={`/donation-requests/${req._id}`}
+                      to={`/dashboard/donation-requests/${req._id}`}
                       className="btn btn-xs"
                     >
                       View
                     </Link>
 
+                    {/* EDIT */}
                     <Link
-                      to={`/dashboard/edit-donation/${req._id}`}
+                      to={`/dashboard/edit-donation-request/${req._id}`}
                       className="btn btn-xs btn-warning"
                     >
                       Edit
                     </Link>
 
-                    <button
-                     
-                      className="btn btn-xs btn-error"
-                    >
-                      Delete
-                    </button>
+                    {/* DELETE */}
+                    <button className="btn btn-xs btn-error">Delete</button>
 
                     {req.status === "inprogress" && (
                       <>

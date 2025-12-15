@@ -61,7 +61,7 @@ const CreateDonationRequest = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white shadow p-6 rounded my-10">
+    <div className="max-w-3xl mx-auto bg-[#fff9f9] shadow p-6 rounded my-10">
       <h2 className="text-2xl font-bold mb-6">Create Donation Request</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -72,7 +72,7 @@ const CreateDonationRequest = () => {
             type="text"
             value={user.displayName || user.name}
             disabled
-            className="input input-bordered w-full bg-gray-200"
+            className="input border-[#b71b1c] input-bordered w-full bg-gray-200"
           />
         </div>
 
@@ -82,7 +82,7 @@ const CreateDonationRequest = () => {
             type="email"
             value={user.email}
             disabled
-            className="input input-bordered w-full bg-gray-200"
+            className="input input-bordered border-[#b71b1c] w-full bg-gray-200"
           />
         </div>
 
@@ -92,7 +92,7 @@ const CreateDonationRequest = () => {
           <input
             type="text"
             {...register("recipientName", { required: true })}
-            className="input input-bordered w-full"
+            className="input border-[#b71b1c] input-bordered w-full"
             placeholder="Recipient name"
           />
           {errors.recipientName && (
@@ -104,7 +104,7 @@ const CreateDonationRequest = () => {
           <label className="label">Recipient District</label>
           <select
             {...register("recipientDistrict", { required: true })}
-            className="select select-bordered w-full"
+            className="select select-bordered border-[#b71b1c] w-full"
           >
             <option value="">Select district</option>
             {district.map((d) => (
@@ -122,7 +122,7 @@ const CreateDonationRequest = () => {
           <label className="label">Recipient Upazila</label>
           <select
             {...register("recipientUpazila", { required: true })}
-            className="select select-bordered w-full"
+            className="select select-bordered border-[#b71b1c] w-full"
           >
             <option value="">Select upazila</option>
             {upazila.map((u) => (
@@ -142,7 +142,7 @@ const CreateDonationRequest = () => {
           <input
             type="text"
             {...register("hospitalName", { required: true })}
-            className="input input-bordered w-full"
+            className="input input-bordered border-[#b71b1c] w-full"
             placeholder="Hospital name"
           />
           {errors.hospitalName && (
@@ -155,7 +155,7 @@ const CreateDonationRequest = () => {
           <input
             type="text"
             {...register("fullAddress", { required: true })}
-            className="input input-bordered w-full"
+            className="input input-bordered border-[#b71b1c] w-full"
             placeholder="Full address"
           />
           {errors.fullAddress && (
@@ -168,7 +168,7 @@ const CreateDonationRequest = () => {
           <label className="label">Blood Group</label>
           <select
             {...register("bloodGroup", { required: true })}
-            className="select select-bordered w-full"
+            className="select select-bordered border-[#b71b1c] w-full"
           >
             <option value="">Select blood group</option>
             <option>A+</option>
@@ -191,7 +191,7 @@ const CreateDonationRequest = () => {
           <input
             type="date"
             {...register("donationDate", { required: true })}
-            className="input input-bordered w-full"
+            className="input input-bordered border-[#b71b1c] w-full"
           />
           {errors.donationDate && (
             <p className="text-red-500">Donation date is required</p>
@@ -203,7 +203,7 @@ const CreateDonationRequest = () => {
           <input
             type="time"
             {...register("donationTime", { required: true })}
-            className="input input-bordered w-full"
+            className="input input-bordered border-[#b71b1c] w-full"
           />
           {errors.donationTime && (
             <p className="text-red-500">Donation time is required</p>
@@ -215,7 +215,7 @@ const CreateDonationRequest = () => {
           <label className="label">Request Message</label>
           <textarea
             {...register("requestMessage", { required: true })}
-            className="textarea textarea-bordered w-full"
+            className="textarea textarea-bordered border-[#b71b1c] w-full"
             placeholder="Explain why you need blood"
           />
           {errors.requestMessage && (
