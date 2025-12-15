@@ -5,6 +5,7 @@ import axios from "axios";
 import { Link } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import Loading from "../../Components/Loading";
+import Swal from "sweetalert2";
 
 const DashboardHome = () => {
   const { user, loading } = useAuth();
@@ -35,111 +36,145 @@ const DashboardHome = () => {
       });
   };
 
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This donation request will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#b71b1c",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      backdrop: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`http://localhost:3000/donation-requests/${id}`)
+          .then(() => {
+            setRequests((prev) => prev.filter((r) => r._id !== id));
+
+            Swal.fire({
+              title: "Deleted!",
+              text: "Donation request has been deleted.",
+              icon: "success",
+              confirmButtonColor: "#b71b1c",
+              backdrop: false,
+            });
+          });
+      }
+    });
+  };
+
   if (loading) {
     return <Loading></Loading>;
   }
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">
-        Welcome, {user?.displayName || user?.email}
-      </h2>
-      {requests.length === 0 && (
-        <p className="text-gray-500">
-          You have not created any donation request yet.
-        </p>
-      )}
-      {requests.length > 0 && (
-        <>
-          <table className="table w-full border border-[#b71b1c]">
-            <thead>
-              <tr>
-                <th>Recipient</th>
-                <th>Location</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Blood</th>
-                <th>Status</th>
-                <th>Donor Info</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
+    <>
+      <div className="p-6">
+        <h2 className="text-2xl font-bold mb-6">
+          Welcome, {user?.displayName || user?.email}
+        </h2>
 
-            <tbody>
-              {requests.map((req) => (
-                <tr key={req._id}>
-                  <td>{req.recipientName}</td>
-                  <td>
-                    {req.recipientDistrict}, {req.recipientUpazila}
-                  </td>
-                  <td>{req.donationDate}</td>
-                  <td>{req.donationTime}</td>
-                  <td>{req.bloodGroup}</td>
-                  <td className="capitalize">{req.status}</td>
+        {requests.length === 0 && (
+          <p className="text-gray-500">
+            You have not created any donation request yet.
+          </p>
+        )}
 
-                  {/* Donor Info */}
-                  <td>
-                    {req.status === "inprogress" ? (
-                      <>
-                        <p>{req.donorName}</p>
-                        <p className="text-xs">{req.donorEmail}</p>
-                      </>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-
-                  {/* Actions */}
-                  <td className="space-x-1">
-                    {/* VIEW */}
-                    <Link
-                      to={`/dashboard/donation-requests/${req._id}`}
-                      className="btn btn-xs"
-                    >
-                      View
-                    </Link>
-
-                    {/* EDIT */}
-                    <Link
-                      to={`/dashboard/edit-donation-request/${req._id}`}
-                      className="btn btn-xs btn-warning"
-                    >
-                      Edit
-                    </Link>
-
-                    {/* DELETE */}
-                    <button className="btn btn-xs bg-[#b71b1c] text-white ">Delete</button>
-
-                    {req.status === "inprogress" && (
-                      <>
-                        <button
-                          onClick={() => updateStatus(req._id, "done")}
-                          className="btn btn-xs btn-success"
-                        >
-                          Done
-                        </button>
-                        <button
-                          onClick={() => updateStatus(req._id, "canceled")}
-                          className="btn btn-xs btn-secondary"
-                        >
-                          Cancel
-                        </button>
-                      </>
-                    )}
-                  </td>
+        {requests.length > 0 && (
+          <>
+            <table className="table w-full border border-[#b71b1c]">
+              <thead>
+                <tr>
+                  <th>Recipient</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Blood</th>
+                  <th>Status</th>
+                  <th>Donor Info</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
 
-          <Link to="/dashboard/my-donation-requests">
-            <button className="btn bg-[#b71b1c] text-white mt-4">
-              View My All Requests
-            </button>
-          </Link>
-        </>
-      )}
-    </div>
+              <tbody>
+                {requests.map((req) => (
+                  <tr key={req._id}>
+                    <td>{req.recipientName}</td>
+                    <td>
+                      {req.recipientDistrict}, {req.recipientUpazila}
+                    </td>
+                    <td>{req.donationDate}</td>
+                    <td>{req.donationTime}</td>
+                    <td>{req.bloodGroup}</td>
+                    <td className="capitalize">{req.status}</td>
+
+                    <td>
+                      {req.status === "inprogress" ? (
+                        <>
+                          <p>{req.donorName}</p>
+                          <p className="text-xs">{req.donorEmail}</p>
+                        </>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    <td className="space-x-1">
+                      <Link
+                        to={`/dashboard/donation-requests/${req._id}`}
+                        className="btn btn-xs"
+                      >
+                        View
+                      </Link>
+
+                      <Link
+                        to={`/dashboard/edit-donation-request/${req._id}`}
+                        className="btn btn-xs btn-warning"
+                      >
+                        Edit
+                      </Link>
+
+                      <button
+                        onClick={() => handleDelete(req._id)}
+                        className="btn btn-xs bg-[#b71b1c] text-white"
+                      >
+                        Delete
+                      </button>
+
+                      {req.status === "inprogress" && (
+                        <>
+                          <button
+                            onClick={() => updateStatus(req._id, "done")}
+                            className="btn btn-xs btn-success"
+                          >
+                            Done
+                          </button>
+                          <button
+                            onClick={() => updateStatus(req._id, "canceled")}
+                            className="btn btn-xs btn-secondary"
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <Link to="/dashboard/my-donation-requests">
+              <button className="btn bg-[#b71b1c] text-white mt-4">
+                View My All Requests
+              </button>
+            </Link>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 
