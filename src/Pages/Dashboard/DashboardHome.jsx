@@ -11,20 +11,14 @@ const DashboardHome = () => {
   const { user, loading } = useAuth();
   const [requests, setRequests] = useState([]);
 
-  useEffect(() => {
+ useEffect(() => {
     if (!loading && user?.email) {
       axios
-        .get(
-          `http://localhost:3000/donation-requests/recent?email=${user.email}`
-        )
-        .then((res) => {
-          setRequests(res.data);
-        })
-        .catch((err) => {
-          console.error("Dashboard fetch error:", err);
-        });
+        .get(`http://localhost:3000/donation-requests/recent?email=${user.email}`)
+        .then((res) => setRequests(res.data))
+        .catch((err) => console.error("Dashboard fetch error:", err));
     }
-  }, [loading, user?.email]);
+  }, [loading, user])
 
   const updateStatus = (id, status) => {
     axios
@@ -74,8 +68,9 @@ const DashboardHome = () => {
     <>
       <div className="p-6">
         <h2 className="text-2xl font-bold mb-6">
-          Welcome, {user?.displayName || user?.email}
-        </h2>
+  Welcome, {user?.displayName || user?.name || user?.email}
+</h2>
+
 
         {requests.length === 0 && (
           <p className="text-gray-500">
