@@ -79,7 +79,7 @@ const DashboardHome = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="p-6">
+    <div className="p-6 ">
       <h2 className="text-3xl font-bold mb-8 text-gray-800">
         Welcome,{" "}
         <span className="text-[#b71b1c]">
@@ -87,7 +87,7 @@ const DashboardHome = () => {
         </span>
       </h2>
       {(user.role === "admin" || user.role === "volunteer") && stats && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 ">
           <div className="flex items-center p-6 bg-white border-l-4 border-blue-500 shadow-md rounded-lg">
             <FaUsers className="text-4xl text-blue-500 mr-4" />
             <div>
@@ -181,22 +181,22 @@ const DashboardHome = () => {
                       "N/A"
                     )}
                   </td>
-                  <td className="space-x-2">
+                  <td className="">
                     <Link
-                      to={`/dashboard/update-donation-request/${req._id}`}
-                      className="btn btn-ghost btn-xs text-blue-600"
+                      to={`/dashboard/edit-donation-request/${req._id}`}
+                      className="btn btn-ghost btn-lg text-blue-600"
                     >
                       <FaEdit />
                     </Link>
                     <button
                       onClick={() => handleDelete(req._id)}
-                      className="btn btn-ghost btn-xs text-red-600"
+                      className="btn btn-ghost btn-lg text-red-600"
                     >
                       <FaTrash />
                     </button>
                     <Link
-                      to={`/donation-request-details/${req._id}`}
-                      className="btn btn-ghost btn-xs text-green-600"
+                      to={`/dashboard/donation-requests/${req._id}`}
+                      className="btn btn-ghost btn-lg text-green-600"
                     >
                       <FaEye />
                     </Link>

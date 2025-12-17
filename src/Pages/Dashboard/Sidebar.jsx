@@ -1,12 +1,11 @@
-import React from 'react';
+import React from "react";
 import { Link, NavLink } from "react-router";
 import logoImg from "../../assets/Logo.png";
-import useAuth from '../../hooks/useAuth';
-
+import useAuth from "../../hooks/useAuth";
 
 const Sidebar = () => {
   const { user } = useAuth();
-  const role = user?.role; 
+  const role = user?.role;
 
   return (
     <div className="flex min-h-screen">
@@ -20,15 +19,25 @@ const Sidebar = () => {
         </h2>
 
         <ul className="space-y-2">
-
           <li>
-            <NavLink to="/dashboard" end className={({ isActive }) => isActive ? "text-red-500 font-bold" : "hover:text-red-400"}>
+            <NavLink
+              to="/dashboard"
+              end
+              className={({ isActive }) =>
+                isActive ? "text-red-500 font-bold" : "hover:text-red-400"
+              }
+            >
               Home
             </NavLink>
           </li>
 
           <li>
-            <NavLink to="/dashboard/profile" className={({ isActive }) => isActive ? "text-red-500 font-bold" : "hover:text-red-400"}>
+            <NavLink
+              to="/dashboard/profile"
+              className={({ isActive }) =>
+                isActive ? "text-red-500 font-bold" : "hover:text-red-400"
+              }
+            >
               Profile
             </NavLink>
           </li>
@@ -49,9 +58,7 @@ const Sidebar = () => {
           {role === "admin" && (
             <>
               <li>
-                <NavLink to="/dashboard/all-users">
-                  All Users
-                </NavLink>
+                <NavLink to="/dashboard/all-users">All Users</NavLink>
               </li>
               <li>
                 <NavLink to="/dashboard/all-blood-donation-request">
@@ -70,7 +77,9 @@ const Sidebar = () => {
           )}
         </ul>
         <div className="absolute bottom-5 left-4">
-           <Link to="/" className="btn btn-sm btn-outline btn-error">Back to Home</Link>
+          <Link to="/" className="btn btn-sm btn-outline btn-error">
+            Back to Home
+          </Link>
         </div>
       </aside>
     </div>

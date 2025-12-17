@@ -67,9 +67,13 @@ const AllUsers = () => {
             <tr key={u._id}>
               <td>
                 <img
-                  src={u.photoURL || "/default-avatar.png"}
+                  src={u.avatar || "/default-avatar.png"}
                   alt="avatar"
-                  className="w-10 h-10 rounded-full"
+                  className="w-10 h-10 rounded-full object-cover"
+                  onError={(e) => {
+                    e.target.src =
+                      "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+                  }}
                 />
               </td>
               <td>{u.email}</td>

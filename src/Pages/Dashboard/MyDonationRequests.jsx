@@ -77,7 +77,7 @@ const MyDonationRequests = () => {
   if (loading) return <div className="text-center mt-20">Loading...</div>;
 
   return (
-    <div className="max-w-6xl mx-auto mt-10 p-4 bg-white shadow-lg rounded-lg border-t-4 border-[#b71b1c]">
+    <div className="max-w-6xl mx-auto mt-10 p-4 bg-[#fff9f9] shadow-lg rounded-lg border-t-4 border-[#b71b1c]">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <h2 className="text-2xl font-bold text-gray-800 uppercase">My Donation Requests</h2>
         
@@ -135,9 +135,9 @@ const MyDonationRequests = () => {
                   </td>
                   <td className="text-center">
                     <div className="flex justify-center gap-3">
-                      <Link to={`/dashboard/update-donation-request/${req._id}`} className="text-blue-500"><FaEdit size={18} /></Link>
+                      <Link to={`/dashboard/edit-donation-request/${req._id}`} className="text-blue-500"><FaEdit size={18} /></Link>
                       <button onClick={() => handleDelete(req._id)} className="text-red-500"><FaTrash size={16} /></button>
-                      <Link to={`/donation-request-details/${req._id}`} className="text-green-500"><FaEye size={18} /></Link>
+                      <Link to={`/dashboard/donation-requests/${req._id}`} className="text-green-500"><FaEye size={18} /></Link>
                     </div>
                   </td>
                 </tr>
