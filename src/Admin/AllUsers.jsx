@@ -9,17 +9,23 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
   const [filter, setFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const itemsPerPage = 10;
 
-  const fetchUsers = () => {
+ const fetchUsers = () => {
     axios
-      .get(`http://localhost:3000/users${filter ? `?status=${filter}` : ""}`)
-      .then((res) => setUsers(res.data))
+      .get(`http://localhost:3000/users?page=${currentPage}&limit=${itemsPerPage}${filter ? `&status=${filter}` : ""}`)
+      .then((res) => {
+        setUsers(res.data.users);
+        setTotalCount(res.data.total);
+      })
       .catch((err) => console.error("Fetch users error:", err));
   };
 
   useEffect(() => {
     fetchUsers();
-  }, [filter]);
+  }, [filter, currentPage]);
 
   const handleStatusChange = (id, action) => {
     let url;
@@ -36,6 +42,8 @@ const AllUsers = () => {
       })
       .catch(() => Swal.fire("Error", "Action failed", "error"));
   };
+
+   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   return (
     <div className="p-6">
@@ -161,6 +169,17 @@ const AllUsers = () => {
           ))}
         </tbody>
       </table>
+      <div className="flex justify-center mt-6 gap-2">
+         {[...Array(totalPages)].map((_, i) => (
+           <button 
+             key={i} 
+             onClick={() => setCurrentPage(i + 1)}
+             className={`btn btn-sm ${currentPage === i + 1 ? "bg-red-600 text-white" : ""}`}
+           >
+             {i + 1}
+           </button>
+         ))}
+      </div>
     </div>
   );
 };
