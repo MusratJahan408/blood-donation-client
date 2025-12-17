@@ -1,7 +1,5 @@
-import React from 'react';
-
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState, useEffect } from "react";
+import { useForm} from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 import useLocationData from "../../hooks/useLocationData";
 import axios from "axios";
@@ -10,19 +8,32 @@ import { toast } from "react-hot-toast";
 const CreateDonationRequest = () => {
   const { user, loading } = useAuth();
   const { district, upazila } = useLocationData();
+
   const [submitting, setSubmitting] = useState(false);
+  const [filteredUpazila, setFilteredUpazila] = useState([]);
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
 
-  if (loading) {
-    return <p className="text-center mt-10">Loading...</p>;
-  }
+  const selectedDistrict = watch("recipientDistrict");
 
-  // Blocked users cannot create requests
+  // Filter upazila when district changes
+  useEffect(() => {
+    if (selectedDistrict) {
+      const districtObj = district.find((d) => d.name === selectedDistrict);
+      const filtered = upazila.filter((u) => u.district_id === districtObj?.id);
+      setFilteredUpazila(filtered);
+    } else {
+      setFilteredUpazila([]);
+    }
+  }, [selectedDistrict, district, upazila]);
+
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
+
   if (user?.status === "blocked") {
     return (
       <p className="text-center mt-10 text-red-500 font-bold">
@@ -46,14 +57,14 @@ const CreateDonationRequest = () => {
       donationDate: data.donationDate,
       donationTime: data.donationTime,
       requestMessage: data.requestMessage,
-      status: "pending", // default status
+      status: "pending",
     };
 
     try {
       await axios.post("http://localhost:3000/donation-requests", requestPayload);
       toast.success("Donation request created successfully!");
     } catch (err) {
-      console.error("Donation request failed:", err);
+      console.error(err);
       toast.error("Failed to create donation request");
     } finally {
       setSubmitting(false);
@@ -125,7 +136,7 @@ const CreateDonationRequest = () => {
             className="select select-bordered border-[#b71b1c] w-full"
           >
             <option value="">Select upazila</option>
-            {upazila.map((u) => (
+            {filteredUpazila.map((u) => (
               <option key={u.id} value={u.name}>
                 {u.name}
               </option>
@@ -171,14 +182,11 @@ const CreateDonationRequest = () => {
             className="select select-bordered border-[#b71b1c] w-full"
           >
             <option value="">Select blood group</option>
-            <option>A+</option>
-            <option>A-</option>
-            <option>B+</option>
-            <option>B-</option>
-            <option>AB+</option>
-            <option>AB-</option>
-            <option>O+</option>
-            <option>O-</option>
+            {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))}
           </select>
           {errors.bloodGroup && (
             <p className="text-red-500">Blood group is required</p>

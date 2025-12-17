@@ -13,6 +13,10 @@ import EditDonationRequest from "../Pages/Dashboard/EditDonationRequest";
 import DonationRequestDetails from "../Pages/Dashboard/DonationRequestDetails";
 import DashboardLayout from "../Layout/DashboardLayout";
 import PrivateRoute from "./PrivateRoute";
+import AdminRoute from "./AdminRoute";
+import AllUsers from "../Admin/AllUsers";
+import AllDonationRequests from "../Admin/AllDonationRequests";
+import VolunteerRoute from "./VolunteerRoute";
 
 export const router = createBrowserRouter([
   {
@@ -69,6 +73,23 @@ export const router = createBrowserRouter([
       {
         path: "donation-requests/:id",
         element: <DonationRequestDetails />,
+      },
+
+      {
+        path: "all-users",
+        element: (
+          <AdminRoute>
+            <AllUsers></AllUsers>
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "all-blood-donation-request",
+        element: (
+          <VolunteerRoute>
+             <AllDonationRequests></AllDonationRequests>
+          </VolunteerRoute>
+        ),
       },
     ],
   },

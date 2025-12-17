@@ -1,21 +1,77 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router';
-import logoImg from '../../assets/Logo.png'
+import { Link, NavLink } from "react-router";
+import logoImg from "../../assets/Logo.png";
+import useAuth from '../../hooks/useAuth';
+
 
 const Sidebar = () => {
-    return (
+  const { user } = useAuth();
+  const role = user?.role; 
+
+  return (
     <div className="flex min-h-screen">
-      <aside className="w-64 bg-gray-800 text-white p-4">
-         <Link to="/" className="btn btn-ghost text-xl">
-                  <img className="w-40 my-20" src={logoImg} alt="Logo" />
-                </Link>
-        <h2 className="text-2xl font-bold my-6">Dashboard</h2>
+      <aside className="w-64 bg-gray-800 text-white p-4 fixed h-full">
+        <Link to="/" className="flex justify-center">
+          <img className="w-32 my-6" src={logoImg} alt="Logo" />
+        </Link>
+
+        <h2 className="text-2xl font-bold mb-6 text-center border-b border-gray-700 pb-2">
+          {role?.toUpperCase()} Dashboard
+        </h2>
+
         <ul className="space-y-2">
-          <li><Link to="/dashboard" className="hover:text-red-500">Home</Link></li>
-          <li><Link to="/dashboard/profile" className="hover:text-red-500">Profile</Link></li>
-          <li><Link to="/dashboard/create-donation-request" className="hover:text-red-500">Create Request</Link></li>
-          <li><Link to="/dashboard/my-donation-requests" className="hover:text-red-500">My Requests</Link></li>
+
+          <li>
+            <NavLink to="/dashboard" end className={({ isActive }) => isActive ? "text-red-500 font-bold" : "hover:text-red-400"}>
+              Home
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/dashboard/profile" className={({ isActive }) => isActive ? "text-red-500 font-bold" : "hover:text-red-400"}>
+              Profile
+            </NavLink>
+          </li>
+          {role === "donor" && (
+            <>
+              <li>
+                <NavLink to="/dashboard/create-donation-request">
+                  Create Donation Request
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/dashboard/my-donation-requests">
+                  My Donation Requests
+                </NavLink>
+              </li>
+            </>
+          )}
+          {role === "admin" && (
+            <>
+              <li>
+                <NavLink to="/dashboard/all-users">
+                  All Users
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/dashboard/all-blood-donation-request">
+                  All Blood Donation Requests
+                </NavLink>
+              </li>
+            </>
+          )}
+
+          {role === "volunteer" && (
+            <li>
+              <NavLink to="/dashboard/all-blood-donation-request">
+                All Blood Donation Requests
+              </NavLink>
+            </li>
+          )}
         </ul>
+        <div className="absolute bottom-5 left-4">
+           <Link to="/" className="btn btn-sm btn-outline btn-error">Back to Home</Link>
+        </div>
       </aside>
     </div>
   );
