@@ -5,40 +5,48 @@ import { toast } from "react-hot-toast";
 import { Link } from "react-router";
 import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
 import Swal from "sweetalert2";
+import Loading from "../../Components/Loading";
 
 const MyDonationRequests = () => {
   const { user, loading } = useAuth();
   const [requests, setRequests] = useState([]);
   const [filter, setFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0); 
   const itemsPerPage = 5;
 
   useEffect(() => {
     const fetchAllData = async () => {
       if (!user?.email) return;
       try {
-        let url = `http://localhost:3000/donation-requests?requesterEmail=${user.email}`;
+        let url = `http://localhost:3000/donation-requests?requesterEmail=${user.email}&page=${currentPage}&limit=${itemsPerPage}`;
         if (filter !== "all") {
           url += `&status=${filter}`;
         }
         const res = await axios.get(url);
-        setRequests(res.data.requests || res.data || []);
+        
+        setRequests(res.data.requests || []);
+        setTotalCount(res.data.total || 0);
       } catch (err) {
         toast.error("Failed to load requests");
       }
     };
 
-    if (!loading) {
-      fetchAllData();
-    }
-  }, [user?.email, loading, filter]);
-
+    if (!loading) fetchAllData();
+  }, [user?.email, loading, filter, currentPage]);
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
-      const res = await axios.patch(`http://localhost:3000/donation-requests/status/${id}`, { status: newStatus });
+      const res = await axios.patch(
+        `http://localhost:3000/donation-requests/status/${id}`,
+        { status: newStatus }
+      );
       if (res.data.modifiedCount > 0) {
-        setRequests(prev => prev.map(req => req._id === id ? { ...req, status: newStatus } : req));
+        setRequests((prev) =>
+          prev.map((req) =>
+            req._id === id ? { ...req, status: newStatus } : req
+          )
+        );
         toast.success(`Marked as ${newStatus}`);
       }
     } catch (err) {
@@ -53,13 +61,15 @@ const MyDonationRequests = () => {
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#b71b1c",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const res = await axios.delete(`http://localhost:3000/donation-requests/${id}`);
+          const res = await axios.delete(
+            `http://localhost:3000/donation-requests/${id}`
+          );
           if (res.data.deletedCount > 0) {
-            setRequests(prev => prev.filter(req => req._id !== id));
+            setRequests((prev) => prev.filter((req) => req._id !== id));
             Swal.fire("Deleted!", "Request removed.", "success");
           }
         } catch (err) {
@@ -69,12 +79,9 @@ const MyDonationRequests = () => {
     });
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentRequests = requests.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(requests.length / itemsPerPage);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  if (loading) return <div className="text-center mt-20">Loading...</div>;
+  if (loading) return <Loading></Loading>;
 
   return (
     <div className="max-w-6xl mx-auto mt-10 p-4 bg-[#fff9f9] shadow-lg rounded-lg border-t-4 border-[#b71b1c]">
@@ -83,9 +90,12 @@ const MyDonationRequests = () => {
         
         <div className="flex items-center gap-2">
           <span className="font-medium text-gray-600">Filter by:</span>
-          <select 
-            value={filter} 
-            onChange={(e) => { setFilter(e.target.value); setCurrentPage(1); }} 
+          <select
+            value={filter}
+            onChange={(e) => {
+              setFilter(e.target.value);
+              setCurrentPage(1); 
+            }}
             className="select select-bordered select-sm border-[#b71b1c]"
           >
             <option value="all">All</option>
@@ -110,17 +120,17 @@ const MyDonationRequests = () => {
             </tr>
           </thead>
           <tbody>
-            {currentRequests.length > 0 ? (
-              currentRequests.map((req) => (
+            {requests.length > 0 ? (
+              requests.map((req) => (
                 <tr key={req._id}>
                   <td>
                     <div className="font-bold">{req.recipientName}</div>
                     <span className="badge badge-error badge-sm text-white">{req.bloodGroup}</span>
                   </td>
                   <td className="text-sm">{req.recipientDistrict}, {req.recipientUpazila}</td>
-                  <td className="text-sm">{req.donationDate} <br/> {req.donationTime}</td>
-                  <td>
-                    <span className={`badge badge-outline font-bold ${req.status === 'pending' ? 'text-yellow-600' : 'text-blue-600'}`}>
+                  <td className="text-sm">{req.donationDate} <br /> {req.donationTime}</td>
+                  <td className="capitalize">
+                    <span className={`badge badge-outline font-bold ${req.status === "pending" ? "text-yellow-600" : "text-blue-600"}`}>
                       {req.status}
                     </span>
                     {req.status === "inprogress" && (
@@ -149,13 +159,30 @@ const MyDonationRequests = () => {
         </table>
       </div>
 
+      {/* Pagination UI - Requirement 4.1 অনুযায়ী */}
       {totalPages > 1 && (
-        <div className="flex justify-center mt-6 gap-2">
+        <div className="flex justify-center mt-6 gap-2 pb-5">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+            className="btn btn-sm btn-outline"
+          >Prev</button>
+
           {[...Array(totalPages)].map((_, i) => (
-            <button key={i} onClick={() => setCurrentPage(i + 1)} className={`btn btn-sm ${currentPage === i + 1 ? "bg-[#b71b1c] text-white" : "btn-outline"}`}>
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`btn btn-sm ${currentPage === i + 1 ? "bg-[#b71b1c] text-white" : "btn-outline"}`}
+            >
               {i + 1}
             </button>
           ))}
+
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            className="btn btn-sm btn-outline"
+          >Next</button>
         </div>
       )}
     </div>
