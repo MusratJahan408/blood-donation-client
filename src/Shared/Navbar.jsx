@@ -7,7 +7,7 @@ const Navbar = () => {
   const { user, logOut } = useAuth();
 
   const handleSignOut = () => {
-    logOut().catch((error) => console.log(error));
+    logOut().catch((error) => .log(error));
   };
 
   const links = (

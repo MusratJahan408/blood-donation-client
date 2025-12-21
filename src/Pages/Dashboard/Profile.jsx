@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
@@ -14,7 +14,9 @@ const Profile = () => {
   useEffect(() => {
     if (!loading && user?.email) {
       axios
-        .get(`http://localhost:3000/users/${user.email}`)
+        .get(
+          `https://blood-donation-server-chi-eight.vercel.app/users/${user.email}`
+        )
         .then((res) => {
           setProfile(res.data);
           setFormData(res.data);
@@ -31,22 +33,24 @@ const Profile = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     try {
-
       const res = await axios.patch(
-        `http://localhost:3000/users/${user.email}`,
+        `https://blood-donation-server-chi-eight.vercel.app/users/${user.email}`,
         formData
       );
 
       if (res.data.modifiedCount > 0) {
-
         setProfile({ ...profile, ...formData });
 
         await updateUserProfile({
           displayName: formData.name,
-          photoURL: formData.avatar
+          photoURL: formData.avatar,
         });
 
-        setUser({ ...user, displayName: formData.name, photoURL: formData.avatar });
+        setUser({
+          ...user,
+          displayName: formData.name,
+          photoURL: formData.avatar,
+        });
 
         setEdit(false);
       }
@@ -78,10 +82,7 @@ const Profile = () => {
             Edit
           </button>
         ) : (
-          <button
-            onClick={handleSave}
-            className="btn bg-[#b71b1c] text-white"
-          >
+          <button onClick={handleSave} className="btn bg-[#b71b1c] text-white">
             Save
           </button>
         )}

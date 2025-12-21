@@ -13,9 +13,13 @@ const AllUsers = () => {
   const [totalCount, setTotalCount] = useState(0);
   const itemsPerPage = 10;
 
- const fetchUsers = () => {
+  const fetchUsers = () => {
     axios
-      .get(`http://localhost:3000/users?page=${currentPage}&limit=${itemsPerPage}${filter ? `&status=${filter}` : ""}`)
+      .get(
+        `https://blood-donation-server-chi-eight.vercel.app/users?page=${currentPage}&limit=${itemsPerPage}${
+          filter ? `&status=${filter}` : ""
+        }`
+      )
       .then((res) => {
         setUsers(res.data.users);
         setTotalCount(res.data.total);
@@ -35,7 +39,7 @@ const AllUsers = () => {
     if (action === "make-admin") url = `/users/make-admin/${id}`;
 
     axios
-      .patch(`http://localhost:3000${url}`)
+      .patch(`https://blood-donation-server-chi-eight.vercel.app${url}`)
       .then(() => {
         Swal.fire("Success", "Action performed successfully", "success");
         fetchUsers();
@@ -43,7 +47,7 @@ const AllUsers = () => {
       .catch(() => Swal.fire("Error", "Action failed", "error"));
   };
 
-   const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   return (
     <div className="p-6">
@@ -170,15 +174,17 @@ const AllUsers = () => {
         </tbody>
       </table>
       <div className="flex justify-center mt-6 gap-2">
-         {[...Array(totalPages)].map((_, i) => (
-           <button 
-             key={i} 
-             onClick={() => setCurrentPage(i + 1)}
-             className={`btn btn-sm ${currentPage === i + 1 ? "bg-red-600 text-white" : ""}`}
-           >
-             {i + 1}
-           </button>
-         ))}
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i + 1)}
+            className={`btn btn-sm ${
+              currentPage === i + 1 ? "bg-red-600 text-white" : ""
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
       </div>
     </div>
   );

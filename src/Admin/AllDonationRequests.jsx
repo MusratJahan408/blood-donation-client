@@ -10,10 +10,10 @@ const AllDonationRequests = () => {
   const [filter, setFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const itemsPerPage = 10; 
+  const itemsPerPage = 10;
 
   const fetchRequests = () => {
-    let url = `http://localhost:3000/admin/donation-requests?status=${filter}&page=${currentPage}&limit=${itemsPerPage}`;
+    let url = `https://blood-donation-server-chi-eight.vercel.app/admin/donation-requests?status=${filter}&page=${currentPage}&limit=${itemsPerPage}`;
 
     axios
       .get(url)
@@ -31,7 +31,7 @@ const AllDonationRequests = () => {
   const handleStatusUpdate = async (id, newStatus) => {
     try {
       await axios.patch(
-        `http://localhost:3000/donation-requests/status/${id}`,
+        `https://blood-donation-server-chi-eight.vercel.app/donation-requests/status/${id}`,
         { status: newStatus }
       );
       fetchRequests();
@@ -51,7 +51,9 @@ const AllDonationRequests = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:3000/donation-requests/${id}`)
+          .delete(
+            `https://blood-donation-server-chi-eight.vercel.app/donation-requests/${id}`
+          )
           .then(() => {
             fetchRequests();
             Swal.fire("Deleted!", "Request deleted.", "success");
@@ -66,7 +68,7 @@ const AllDonationRequests = () => {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">All Blood Donation Requests</h2>
-      
+
       <div className="flex justify-between items-center mb-4">
         <select
           onChange={(e) => {
@@ -104,7 +106,13 @@ const AllDonationRequests = () => {
                     {req.recipientDistrict}, {req.recipientUpazila}
                   </td>
                   <td className="capitalize">
-                    <span className={`badge badge-outline ${req.status === 'pending' ? 'badge-warning' : 'badge-info'}`}>
+                    <span
+                      className={`badge badge-outline ${
+                        req.status === "pending"
+                          ? "badge-warning"
+                          : "badge-info"
+                      }`}
+                    >
                       {req.status}
                     </span>
                     {req.status === "inprogress" && (
@@ -112,11 +120,17 @@ const AllDonationRequests = () => {
                         <button
                           onClick={() => handleStatusUpdate(req._id, "done")}
                           className="btn btn-xs btn-success"
-                        >Done</button>
+                        >
+                          Done
+                        </button>
                         <button
-                          onClick={() => handleStatusUpdate(req._id, "canceled")}
+                          onClick={() =>
+                            handleStatusUpdate(req._id, "canceled")
+                          }
                           className="btn btn-xs btn-error"
-                        >Cancel</button>
+                        >
+                          Cancel
+                        </button>
                       </div>
                     )}
                   </td>
@@ -124,24 +138,34 @@ const AllDonationRequests = () => {
                     <Link
                       to={`/dashboard/donation-requests/${req._id}`}
                       className="btn btn-xs"
-                    >View</Link>
+                    >
+                      View
+                    </Link>
                     {user?.role === "admin" && (
                       <>
                         <Link
                           to={`/dashboard/edit-donation-request/${req._id}`}
                           className="btn btn-xs btn-warning"
-                        >Edit</Link>
+                        >
+                          Edit
+                        </Link>
                         <button
                           onClick={() => handleDelete(req._id)}
                           className="btn btn-xs bg-red-600 text-white"
-                        >Delete</button>
+                        >
+                          Delete
+                        </button>
                       </>
                     )}
                   </td>
                 </tr>
               ))
             ) : (
-              <tr><td colSpan="4" className="text-center py-4">No requests found.</td></tr>
+              <tr>
+                <td colSpan="4" className="text-center py-4">
+                  No requests found.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -152,13 +176,19 @@ const AllDonationRequests = () => {
             disabled={currentPage === 1}
             onClick={() => setCurrentPage((prev) => prev - 1)}
             className="btn btn-sm btn-outline"
-          >Prev</button>
+          >
+            Prev
+          </button>
 
           {[...Array(totalPages)].map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentPage(i + 1)}
-              className={`btn btn-sm ${currentPage === i + 1 ? "bg-[#b71b1c] text-white" : "btn-outline"}`}
+              className={`btn btn-sm ${
+                currentPage === i + 1
+                  ? "bg-[#b71b1c] text-white"
+                  : "btn-outline"
+              }`}
             >
               {i + 1}
             </button>
@@ -168,7 +198,9 @@ const AllDonationRequests = () => {
             disabled={currentPage === totalPages}
             onClick={() => setCurrentPage((prev) => prev + 1)}
             className="btn btn-sm btn-outline"
-          >Next</button>
+          >
+            Next
+          </button>
         </div>
       )}
     </div>

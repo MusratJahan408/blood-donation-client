@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
@@ -10,7 +10,9 @@ const DonationRequestDetails = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/donation-requests/${id}`)
+      .get(
+        `https://blood-donation-server-chi-eight.vercel.app/donation-requests/${id}`
+      )
       .then((res) => setRequest(res.data));
   }, [id]);
 
@@ -20,14 +22,22 @@ const DonationRequestDetails = () => {
     <div className="max-w-2xl mx-auto p-6 border border-[#b71b1c] bg-[#fff9f9] mt-5 md:mt-60 rounded">
       <h2 className="text-2xl font-bold mb-4">Donation Request Details</h2>
 
-      <p><strong>Recipient:</strong> {request.recipientName}</p>
+      <p>
+        <strong>Recipient:</strong> {request.recipientName}
+      </p>
       <p>
         <strong>Location:</strong> {request.recipientDistrict},{" "}
         {request.recipientUpazila}
       </p>
-      <p><strong>Date:</strong> {request.donationDate}</p>
-      <p><strong>Time:</strong> {request.donationTime}</p>
-      <p><strong>Blood Group:</strong> {request.bloodGroup}</p>
+      <p>
+        <strong>Date:</strong> {request.donationDate}
+      </p>
+      <p>
+        <strong>Time:</strong> {request.donationTime}
+      </p>
+      <p>
+        <strong>Blood Group:</strong> {request.bloodGroup}
+      </p>
       <p className="capitalize">
         <strong>Status:</strong> {request.status}
       </p>
@@ -35,8 +45,12 @@ const DonationRequestDetails = () => {
       {request.status === "inprogress" && (
         <>
           <hr className="my-3" />
-          <p><strong>Donor Name:</strong> {request.donorName}</p>
-          <p><strong>Donor Email:</strong> {request.donorEmail}</p>
+          <p>
+            <strong>Donor Name:</strong> {request.donorName}
+          </p>
+          <p>
+            <strong>Donor Email:</strong> {request.donorEmail}
+          </p>
         </>
       )}
     </div>

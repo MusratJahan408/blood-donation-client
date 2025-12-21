@@ -19,25 +19,27 @@ const DashboardHome = () => {
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-  if (!loading && user?.email) {
-    axios
-      .get(`http://localhost:3000/donation-requests/recent?email=${user.email}`)
-      .then((res) => setRequests(res.data))
-      .catch((err) => console.error("Dashboard fetch error:", err));
+    if (!loading && user?.email) {
+      axios
+        .get(
+          `https://blood-donation-server-chi-eight.vercel.app/donation-requests/recent?email=${user.email}`
+        )
+        .then((res) => setRequests(res.data))
+        .catch((err) => console.error("Dashboard fetch error:", err));
 
-   if (user.role === "admin" || user.role === "volunteer") {
-  axios
-    .get("http://localhost:3000/total-stats")
-    .then((res) => setStats(res.data))
-    .catch((err) => console.error("Stats fetch error:", err));
-}
-  }
-}, [loading, user]);
+      if (user.role === "admin" || user.role === "volunteer") {
+        axios
+          .get("https://blood-donation-server-chi-eight.vercel.app/total-stats")
+          .then((res) => setStats(res.data))
+          .catch((err) => console.error("Stats fetch error:", err));
+      }
+    }
+  }, [loading, user]);
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
       const res = await axios.patch(
-        `http://localhost:3000/donation-requests/status/${id}`,
+        `https://blood-donation-server-chi-eight.vercel.app/donation-requests/status/${id}`,
         { status: newStatus }
       );
       if (res.data.modifiedCount > 0) {
@@ -64,7 +66,7 @@ const DashboardHome = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const res = await axios.delete(
-          `http://localhost:3000/donation-requests/${id}`
+          `https://blood-donation-server-chi-eight.vercel.app/donation-requests/${id}`
         );
         if (res.data.deletedCount > 0) {
           setRequests(requests.filter((req) => req._id !== id));

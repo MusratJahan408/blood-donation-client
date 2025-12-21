@@ -12,19 +12,19 @@ const MyDonationRequests = () => {
   const [requests, setRequests] = useState([]);
   const [filter, setFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0); 
+  const [totalCount, setTotalCount] = useState(0);
   const itemsPerPage = 5;
 
   useEffect(() => {
     const fetchAllData = async () => {
       if (!user?.email) return;
       try {
-        let url = `http://localhost:3000/donation-requests?requesterEmail=${user.email}&page=${currentPage}&limit=${itemsPerPage}`;
+        let url = `https://blood-donation-server-chi-eight.vercel.app/donation-requests?requesterEmail=${user.email}&page=${currentPage}&limit=${itemsPerPage}`;
         if (filter !== "all") {
           url += `&status=${filter}`;
         }
         const res = await axios.get(url);
-        
+
         setRequests(res.data.requests || []);
         setTotalCount(res.data.total || 0);
       } catch (err) {
@@ -38,7 +38,7 @@ const MyDonationRequests = () => {
   const handleStatusUpdate = async (id, newStatus) => {
     try {
       const res = await axios.patch(
-        `http://localhost:3000/donation-requests/status/${id}`,
+        `https://blood-donation-server-chi-eight.vercel.app/donation-requests/status/${id}`,
         { status: newStatus }
       );
       if (res.data.modifiedCount > 0) {
@@ -66,7 +66,7 @@ const MyDonationRequests = () => {
       if (result.isConfirmed) {
         try {
           const res = await axios.delete(
-            `http://localhost:3000/donation-requests/${id}`
+            `https://blood-donation-server-chi-eight.vercel.app/donation-requests/${id}`
           );
           if (res.data.deletedCount > 0) {
             setRequests((prev) => prev.filter((req) => req._id !== id));
@@ -86,15 +86,17 @@ const MyDonationRequests = () => {
   return (
     <div className="max-w-6xl mx-auto mt-10 p-4 bg-[#fff9f9] shadow-lg rounded-lg border-t-4 border-[#b71b1c]">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-        <h2 className="text-2xl font-bold text-gray-800 uppercase">My Donation Requests</h2>
-        
+        <h2 className="text-2xl font-bold text-gray-800 uppercase">
+          My Donation Requests
+        </h2>
+
         <div className="flex items-center gap-2">
           <span className="font-medium text-gray-600">Filter by:</span>
           <select
             value={filter}
             onChange={(e) => {
               setFilter(e.target.value);
-              setCurrentPage(1); 
+              setCurrentPage(1);
             }}
             className="select select-bordered select-sm border-[#b71b1c]"
           >
@@ -125,35 +127,80 @@ const MyDonationRequests = () => {
                 <tr key={req._id}>
                   <td>
                     <div className="font-bold">{req.recipientName}</div>
-                    <span className="badge badge-error badge-sm text-white">{req.bloodGroup}</span>
+                    <span className="badge badge-error badge-sm text-white">
+                      {req.bloodGroup}
+                    </span>
                   </td>
-                  <td className="text-sm">{req.recipientDistrict}, {req.recipientUpazila}</td>
-                  <td className="text-sm">{req.donationDate} <br /> {req.donationTime}</td>
+                  <td className="text-sm">
+                    {req.recipientDistrict}, {req.recipientUpazila}
+                  </td>
+                  <td className="text-sm">
+                    {req.donationDate} <br /> {req.donationTime}
+                  </td>
                   <td className="capitalize">
-                    <span className={`badge badge-outline font-bold ${req.status === "pending" ? "text-yellow-600" : "text-blue-600"}`}>
+                    <span
+                      className={`badge badge-outline font-bold ${
+                        req.status === "pending"
+                          ? "text-yellow-600"
+                          : "text-blue-600"
+                      }`}
+                    >
                       {req.status}
                     </span>
                     {req.status === "inprogress" && (
                       <div className="flex gap-1 mt-2">
-                        <button onClick={() => handleStatusUpdate(req._id, "done")} className="btn btn-xs bg-green-600 text-white border-none">Done</button>
-                        <button onClick={() => handleStatusUpdate(req._id, "canceled")} className="btn btn-xs bg-red-600 text-white border-none">Cancel</button>
+                        <button
+                          onClick={() => handleStatusUpdate(req._id, "done")}
+                          className="btn btn-xs bg-green-600 text-white border-none"
+                        >
+                          Done
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleStatusUpdate(req._id, "canceled")
+                          }
+                          className="btn btn-xs bg-red-600 text-white border-none"
+                        >
+                          Cancel
+                        </button>
                       </div>
                     )}
                   </td>
                   <td className="text-xs italic">
-                    {req.status === "inprogress" ? `${req.donorName} (${req.donorEmail})` : "Not Assigned"}
+                    {req.status === "inprogress"
+                      ? `${req.donorName} (${req.donorEmail})`
+                      : "Not Assigned"}
                   </td>
                   <td className="text-center">
                     <div className="flex justify-center gap-3">
-                      <Link to={`/dashboard/edit-donation-request/${req._id}`} className="text-blue-500"><FaEdit size={18} /></Link>
-                      <button onClick={() => handleDelete(req._id)} className="text-red-500"><FaTrash size={16} /></button>
-                      <Link to={`/dashboard/donation-requests/${req._id}`} className="text-green-500"><FaEye size={18} /></Link>
+                      <Link
+                        to={`/dashboard/edit-donation-request/${req._id}`}
+                        className="text-blue-500"
+                      >
+                        <FaEdit size={18} />
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(req._id)}
+                        className="text-red-500"
+                      >
+                        <FaTrash size={16} />
+                      </button>
+                      <Link
+                        to={`/dashboard/donation-requests/${req._id}`}
+                        className="text-green-500"
+                      >
+                        <FaEye size={18} />
+                      </Link>
                     </div>
                   </td>
                 </tr>
               ))
             ) : (
-              <tr><td colSpan="6" className="text-center py-10">No requests found.</td></tr>
+              <tr>
+                <td colSpan="6" className="text-center py-10">
+                  No requests found.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -166,13 +213,19 @@ const MyDonationRequests = () => {
             disabled={currentPage === 1}
             onClick={() => setCurrentPage((prev) => prev - 1)}
             className="btn btn-sm btn-outline"
-          >Prev</button>
+          >
+            Prev
+          </button>
 
           {[...Array(totalPages)].map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentPage(i + 1)}
-              className={`btn btn-sm ${currentPage === i + 1 ? "bg-[#b71b1c] text-white" : "btn-outline"}`}
+              className={`btn btn-sm ${
+                currentPage === i + 1
+                  ? "bg-[#b71b1c] text-white"
+                  : "btn-outline"
+              }`}
             >
               {i + 1}
             </button>
@@ -182,7 +235,9 @@ const MyDonationRequests = () => {
             disabled={currentPage === totalPages}
             onClick={() => setCurrentPage((prev) => prev + 1)}
             className="btn btn-sm btn-outline"
-          >Next</button>
+          >
+            Next
+          </button>
         </div>
       )}
     </div>

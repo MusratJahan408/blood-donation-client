@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 import useLocationData from "../../hooks/useLocationData";
 import axios from "axios";
@@ -61,7 +61,10 @@ const CreateDonationRequest = () => {
     };
 
     try {
-      await axios.post("http://localhost:3000/donation-requests", requestPayload);
+      await axios.post(
+        "https://blood-donation-server-chi-eight.vercel.app/donation-requests",
+        requestPayload
+      );
       toast.success("Donation request created successfully!");
     } catch (err) {
       console.error(err);

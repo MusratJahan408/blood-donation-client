@@ -12,14 +12,18 @@ const AdminDashboardHome = () => {
   });
 
   useEffect(() => {
-    axios.get("http://localhost:3000/admin-stats").then((res) => {
-      setStats(res.data);
-    });
+    axios
+      .get("https://blood-donation-server-chi-eight.vercel.app/admin-stats")
+      .then((res) => {
+        setStats(res.data);
+      });
   }, []);
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Welcome, {user.displayName || user.name}</h1>
+      <h1 className="text-3xl font-bold mb-6">
+        Welcome, {user.displayName || user.name}
+      </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="p-4 shadow rounded bg-white flex items-center gap-4">
@@ -40,7 +44,9 @@ const AdminDashboardHome = () => {
           <FaHandHoldingMedical size={40} className="text-[#b71b1c]" />
           <div>
             <p>Total Donation Requests</p>
-            <h2 className="text-2xl font-bold">{stats.totalDonationRequests}</h2>
+            <h2 className="text-2xl font-bold">
+              {stats.totalDonationRequests}
+            </h2>
           </div>
         </div>
       </div>

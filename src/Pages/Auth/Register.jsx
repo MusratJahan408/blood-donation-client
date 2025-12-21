@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 import { Link, useNavigate } from "react-router";
@@ -25,7 +25,9 @@ const Register = () => {
   // Filter upazila based on selected district
   const handleDistrictChange = (e) => {
     const selectedDistrict = e.target.value;
-    setFilteredUpazila(upazila.filter((u) => u.district_id === selectedDistrict));
+    setFilteredUpazila(
+      upazila.filter((u) => u.district_id === selectedDistrict)
+    );
   };
 
   const handleRegistration = async (data) => {
@@ -61,7 +63,10 @@ const Register = () => {
         status: "active",
       };
 
-      await axios.post("http://localhost:3000/users", newUser);
+      await axios.post(
+        "https://blood-donation-server-chi-eight.vercel.app/users",
+        newUser
+      );
 
       navigate("/dashboard"); // Redirect to dashboard
     } catch (error) {
@@ -77,14 +82,19 @@ const Register = () => {
         </h1>
 
         <div className="card bg-base-100 shadow-xl p-6">
-          <form onSubmit={handleSubmit(handleRegistration)} className="space-y-4">
+          <form
+            onSubmit={handleSubmit(handleRegistration)}
+            className="space-y-4"
+          >
             {/* Name */}
             <input
               {...register("name", { required: "Name is required" })}
               placeholder="Name"
               className="input input-bordered w-full border-[#b71b1c]"
             />
-            {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="text-red-500">{errors.name.message}</p>
+            )}
 
             {/* Photo */}
             <input
@@ -92,7 +102,9 @@ const Register = () => {
               {...register("photo", { required: "Photo is required" })}
               className="file-input file-input-bordered w-full border-[#b71b1c]"
             />
-            {errors.photo && <p className="text-red-500">{errors.photo.message}</p>}
+            {errors.photo && (
+              <p className="text-red-500">{errors.photo.message}</p>
+            )}
 
             {/* Email */}
             <input
@@ -107,7 +119,9 @@ const Register = () => {
               placeholder="Email"
               className="input input-bordered w-full border-[#b71b1c]"
             />
-            {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-red-500">{errors.email.message}</p>
+            )}
 
             {/* Blood Group */}
             <select
@@ -121,7 +135,9 @@ const Register = () => {
                 </option>
               ))}
             </select>
-            {errors.blood && <p className="text-red-500">{errors.blood.message}</p>}
+            {errors.blood && (
+              <p className="text-red-500">{errors.blood.message}</p>
+            )}
 
             {/* District */}
             <select
@@ -136,7 +152,9 @@ const Register = () => {
                 </option>
               ))}
             </select>
-            {errors.district && <p className="text-red-500">{errors.district.message}</p>}
+            {errors.district && (
+              <p className="text-red-500">{errors.district.message}</p>
+            )}
 
             {/* Upazila */}
             <select
@@ -150,7 +168,9 @@ const Register = () => {
                 </option>
               ))}
             </select>
-            {errors.upazila && <p className="text-red-500">{errors.upazila.message}</p>}
+            {errors.upazila && (
+              <p className="text-red-500">{errors.upazila.message}</p>
+            )}
 
             {/* Password */}
             <div className="relative">
@@ -158,7 +178,10 @@ const Register = () => {
                 type={showPassword ? "text" : "password"}
                 {...register("password", {
                   required: "Password is required",
-                  minLength: { value: 6, message: "Password must be at least 6 characters" },
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
                 })}
                 placeholder="Password"
                 className="input input-bordered w-full border-[#b71b1c]"
@@ -170,7 +193,9 @@ const Register = () => {
                 {showPassword ? <FaEye /> : <FaEyeSlash />}
               </span>
             </div>
-            {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-red-500">{errors.password.message}</p>
+            )}
 
             {/* Confirm Password */}
             <div className="relative">
@@ -194,7 +219,9 @@ const Register = () => {
               <p className="text-red-500">{errors.confirm_password.message}</p>
             )}
 
-            <button className="btn w-full bg-[#b71b1c] text-white mt-3">Register</button>
+            <button className="btn w-full bg-[#b71b1c] text-white mt-3">
+              Register
+            </button>
           </form>
 
           <p className="text-center mt-4">

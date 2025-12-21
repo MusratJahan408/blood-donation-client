@@ -14,8 +14,10 @@ const Search = () => {
   const [donors, setDonors] = useState([]);
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
-  const selectedDistrict = district.find(d => d.name === filters.district);
-  const filteredUpazila = upazila.filter(u => u.district_id === selectedDistrict?.id);
+  const selectedDistrict = district.find((d) => d.name === filters.district);
+  const filteredUpazila = upazila.filter(
+    (u) => u.district_id === selectedDistrict?.id
+  );
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -23,13 +25,16 @@ const Search = () => {
     setLoading(true);
 
     try {
-      const res = await axios.get("http://localhost:3000/search-donors", {
-        params: {
-          bloodGroup: filters.bloodGroup,
-          district: filters.district,
-          upazila: filters.upazila,
-        },
-      });
+      const res = await axios.get(
+        "https://blood-donation-server-chi-eight.vercel.app/search-donors",
+        {
+          params: {
+            bloodGroup: filters.bloodGroup,
+            district: filters.district,
+            upazila: filters.upazila,
+          },
+        }
+      );
       setDonors(res.data);
     } catch (error) {
       console.error("Search error:", error);
@@ -53,12 +58,16 @@ const Search = () => {
           <select
             className="select select-bordered w-full"
             value={filters.bloodGroup}
-            onChange={(e) => setFilters({ ...filters, bloodGroup: e.target.value })}
+            onChange={(e) =>
+              setFilters({ ...filters, bloodGroup: e.target.value })
+            }
             required
           >
             <option value="">Select Group</option>
-            {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(group => (
-              <option key={group} value={group}>{group}</option>
+            {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((group) => (
+              <option key={group} value={group}>
+                {group}
+              </option>
             ))}
           </select>
         </div>
@@ -69,12 +78,16 @@ const Search = () => {
           <select
             className="select select-bordered w-full"
             value={filters.district}
-            onChange={(e) => setFilters({ ...filters, district: e.target.value, upazila: "" })}
+            onChange={(e) =>
+              setFilters({ ...filters, district: e.target.value, upazila: "" })
+            }
             required
           >
             <option value="">Select District</option>
             {district.map((d) => (
-              <option key={d.id} value={d.name}>{d.name}</option>
+              <option key={d.id} value={d.name}>
+                {d.name}
+              </option>
             ))}
           </select>
         </div>
@@ -85,13 +98,17 @@ const Search = () => {
           <select
             className="select select-bordered w-full"
             value={filters.upazila}
-            onChange={(e) => setFilters({ ...filters, upazila: e.target.value })}
+            onChange={(e) =>
+              setFilters({ ...filters, upazila: e.target.value })
+            }
             disabled={!filters.district}
             required
           >
             <option value="">Select Upazila</option>
             {filteredUpazila.map((u) => (
-              <option key={u.id} value={u.name}>{u.name}</option>
+              <option key={u.id} value={u.name}>
+                {u.name}
+              </option>
             ))}
           </select>
         </div>
@@ -104,11 +121,17 @@ const Search = () => {
       <div className="mt-16">
         {!searched && (
           <div className="text-center p-10 bg-gray-50 rounded-lg border-2 border-dashed">
-            <p className="text-xl text-gray-500">Fill the form and click search to see available donors.</p>
+            <p className="text-xl text-gray-500">
+              Fill the form and click search to see available donors.
+            </p>
           </div>
         )}
 
-        {loading && <div className="text-center text-red-600 font-bold">Loading Donors...</div>}
+        {loading && (
+          <div className="text-center text-red-600 font-bold">
+            Loading Donors...
+          </div>
+        )}
 
         {searched && !loading && donors.length === 0 && (
           <div className="alert alert-error shadow-lg max-w-md mx-auto">
@@ -119,7 +142,10 @@ const Search = () => {
         {donors.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {donors.map((donor) => (
-              <div key={donor._id} className="card bg-white shadow-xl border-l-4 border-[#b71b1c] p-6">
+              <div
+                key={donor._id}
+                className="card bg-white shadow-xl border-l-4 border-[#b71b1c] p-6"
+              >
                 <div className="flex justify-between items-start mb-4">
                   <h3 className="text-2xl font-bold">{donor.name}</h3>
                   <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold">
@@ -127,9 +153,15 @@ const Search = () => {
                   </span>
                 </div>
                 <div className="space-y-2 text-gray-700">
-                  <p><strong>District:</strong> {donor.district}</p>
-                  <p><strong>Upazila:</strong> {donor.upazila}</p>
-                  <p><strong>Email:</strong> {donor.email}</p>
+                  <p>
+                    <strong>District:</strong> {donor.district}
+                  </p>
+                  <p>
+                    <strong>Upazila:</strong> {donor.upazila}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {donor.email}
+                  </p>
                 </div>
               </div>
             ))}

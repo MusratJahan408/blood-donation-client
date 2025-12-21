@@ -29,3 +29,5 @@ The main goal of this project is to streamline the blood donation process. It al
 * **MongoDB**: NoSQL database for storing user data, donation requests, and payments.
 * **Stripe**: To process secure credit card transactions.
 * **Dotenv**: To manage environment variables securely.
+
+**Live Link :** https://blood--donation-28748.web.app
