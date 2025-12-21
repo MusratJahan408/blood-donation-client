@@ -19,22 +19,20 @@ const DashboardHome = () => {
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-    if (!loading && user?.email) {
-      axios
-        .get(
-          `http://localhost:3000/donation-requests/recent?email=${user.email}`
-        )
-        .then((res) => setRequests(res.data))
-        .catch((err) => console.error("Dashboard fetch error:", err));
+  if (!loading && user?.email) {
+    axios
+      .get(`http://localhost:3000/donation-requests/recent?email=${user.email}`)
+      .then((res) => setRequests(res.data))
+      .catch((err) => console.error("Dashboard fetch error:", err));
 
-      if (user.role === "admin" || user.role === "volunteer") {
-        axios
-          .get("http://localhost:3000/admin-stats")
-          .then((res) => setStats(res.data))
-          .catch((err) => console.error("Admin stats fetch error:", err));
-      }
-    }
-  }, [loading, user]);
+   if (user.role === "admin" || user.role === "volunteer") {
+  axios
+    .get("http://localhost:3000/total-stats")
+    .then((res) => setStats(res.data))
+    .catch((err) => console.error("Stats fetch error:", err));
+}
+  }
+}, [loading, user]);
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {

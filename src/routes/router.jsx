@@ -19,6 +19,7 @@ import AllDonationRequests from "../Admin/AllDonationRequests";
 import VolunteerRoute from "./VolunteerRoute";
 import BloodDonationRequestDetails from "../Components/BloodDonationRequestDetails";
 import BloodDonationRequests from "../Components/BloodDonationRequests";
+import FundingPage from "../Components/FundingPage";
 
 
 export const router = createBrowserRouter([
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
             <BloodDonationRequestDetails></BloodDonationRequestDetails>
           </PrivateRoute>
         ),
+      },
+      {
+        path:'/funding',
+        element:<PrivateRoute><FundingPage></FundingPage></PrivateRoute>
       },
       {
         path: "/login",
