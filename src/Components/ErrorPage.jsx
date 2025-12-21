@@ -1,60 +1,55 @@
 import React from "react";
 import { useNavigate } from "react-router";
-
+import { AlertTriangle, Home, ArrowLeft, Droplets } from "lucide-react";
 
 const ErrorPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-red-50 px-4">
-      <div className="bg-white shadow-lg rounded-2xl p-8 max-w-lg text-center">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+      <div className="bg-white shadow-2xl rounded-3xl p-10 max-w-lg text-center border border-red-100 relative overflow-hidden">
 
-        {/* Blood Icon */}
-        <div className="flex justify-center mb-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-20 h-20 text-red-600"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.5"
-              d="M12 2.25C12 2.25 6 8.25 6 13.5a6 6 0 0012 0c0-5.25-6-11.25-6-11.25z"
-            />
-          </svg>
+        <div className="absolute -top-10 -right-10 opacity-5">
+           <Droplets size={200} className="text-red-600" />
         </div>
 
-        <h1 className="text-3xl font-bold text-red-600">Error Occurred</h1>
+        <div className="flex justify-center mb-6">
+          <div className="relative">
+            <div className="absolute inset-0 bg-red-200 rounded-full blur-xl opacity-50 animate-pulse"></div>
+            <div className="relative bg-red-100 p-5 rounded-full border-2 border-red-200">
+              <AlertTriangle className="w-12 h-12 text-red-600" />
+            </div>
+          </div>
+        </div>
 
-        <p className="text-slate-600 mt-2 leading-relaxed">
-          Something went wrong while loading this page. <br />  
-          Please make sure your server is working properly in production and is
-          not throwing <strong>CORS</strong>, <strong>404</strong>, or <strong>504</strong> errors.
-        </p>
+        <h1 className="text-4xl font-black text-slate-800 tracking-tight">
+          Oops! <span className="text-red-600">Something Bled</span>
+        </h1>
+        
+        <div className="w-16 h-1.5 bg-red-600 mx-auto my-4 rounded-full"></div>
 
-        {/* Buttons */}
-        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={() => navigate("/")}
-            className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            className="flex items-center justify-center gap-2 px-8 py-3 bg-[#b71b1c] text-white font-bold rounded-xl shadow-lg shadow-red-200 hover:bg-red-700 hover:shadow-none transition-all duration-300 transform hover:-translate-y-1"
           >
+            <Home size={18} />
             Go Home
           </button>
 
           <button
             onClick={() => navigate(-1)}
-            className="px-5 py-2 border border-red-500 text-red-600 rounded-lg hover:bg-red-100"
+            className="flex items-center justify-center gap-2 px-8 py-3 border-2 border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 hover:border-red-300 hover:text-red-600 transition-all duration-300"
           >
+            <ArrowLeft size={18} />
             Go Back
           </button>
         </div>
-
-        <p className="mt-4 text-xs text-slate-400">
-          Tip: Check your production server logs & API URL.
-        </p>
+        <div className="mt-8 pt-6 border-t border-slate-100">
+          <code className="text-[10px] uppercase tracking-widest text-slate-400 font-mono">
+            Error Status: Connection_Failure_Check_API_URL
+          </code>
+        </div>
       </div>
     </div>
   );
